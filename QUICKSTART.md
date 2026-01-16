@@ -40,6 +40,16 @@ This opens a web interface where you can:
 - View resources in real-time
 - Test prompts with different parameters
 
+### Using Streamable HTTP
+
+If you want to use the Streamable HTTP transport, start the server like this:
+
+```bash
+python run_server.py --transport streamable-http --host 127.0.0.1 --port 3001
+```
+
+Then connect MCP Inspector to `http://localhost:3001/sse`.
+
 ### Try These Examples:
 
 1. **Get Router Status:**
