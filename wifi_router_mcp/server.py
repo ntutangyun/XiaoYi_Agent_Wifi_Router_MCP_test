@@ -993,6 +993,7 @@ def create_streamable_http_app() -> Starlette:
     app_instance = Starlette(
         routes=[
             Mount("/sse", app=streamable_http_asgi),
+            Mount("/sse/", app=streamable_http_asgi),
             Route("/health", endpoint=health_check, methods=["GET"]),
         ],
         lifespan=lifespan,
