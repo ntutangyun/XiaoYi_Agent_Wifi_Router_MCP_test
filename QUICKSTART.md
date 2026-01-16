@@ -28,7 +28,7 @@ This guide will help you quickly get the WiFi Router MCP Server up and running.
 
 ## Testing with MCP Inspector (5 minutes)
 
-The fastest way to explore the server's capabilities:
+The fastest way to explore the server's capabilities (stdio transport):
 
 ```bash
 npx @modelcontextprotocol/inspector python run_server.py

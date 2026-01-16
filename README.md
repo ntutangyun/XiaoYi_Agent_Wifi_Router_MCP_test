@@ -76,7 +76,7 @@ Point your MCP client to `http://localhost:3001/sse`.
 
 ### Testing with MCP Inspector
 
-You can test the server using the MCP Inspector tool:
+You can test the server using the MCP Inspector tool (stdio transport):
 
 ```bash
 npx @modelcontextprotocol/inspector python run_server.py
