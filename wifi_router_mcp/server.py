@@ -155,17 +155,18 @@ async def list_resources() -> list[Resource]:
 @app.read_resource()
 async def read_resource(uri: str) -> str:
     """Read a specific router resource."""
-    if uri == "router://devices":
+    uri_str = str(uri)
+    if uri_str == "router://devices":
         return json.dumps({
             "connected_devices": router_state.connected_devices,
             "total_devices": len(router_state.connected_devices),
             "max_devices": router_state.max_devices,
         }, indent=2)
     
-    elif uri == "router://stats":
+    elif uri_str == "router://stats":
         return json.dumps(router_state.network_stats, indent=2)
     
-    elif uri == "router://config":
+    elif uri_str == "router://config":
         return json.dumps({
             "ssid": router_state.ssid,
             "password": "********",  # Always mask password for security
@@ -181,17 +182,17 @@ async def read_resource(uri: str) -> str:
             "uptime_readable": f"{router_state.uptime_seconds // 86400} days, {(router_state.uptime_seconds % 86400) // 3600} hours",
         }, indent=2)
     
-    elif uri == "router://logs":
+    elif uri_str == "router://logs":
         return "\n".join(router_state.logs)
     
-    elif uri == "router://networks":
+    elif uri_str == "router://networks":
         return json.dumps({
             "available_networks": router_state.available_networks,
             "total_networks": len(router_state.available_networks),
         }, indent=2)
     
     else:
-        raise ValueError(f"Unknown resource URI: {uri}")
+        raise ValueError(f"Unknown resource URI: {uri_str}")
 
 
 @app.list_tools()
