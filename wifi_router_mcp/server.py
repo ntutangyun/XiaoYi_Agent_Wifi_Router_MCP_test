@@ -20,6 +20,7 @@ from mcp.types import (
 )
 import mcp.server.stdio
 from starlette.applications import Starlette
+from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 from starlette.routing import Mount, Route
 
@@ -989,13 +990,22 @@ def create_streamable_http_app() -> Starlette:
         async with session_manager.run():
             yield
 
-    return Starlette(
+    app_instance = Starlette(
         routes=[
             Mount("/sse", app=streamable_http_asgi),
             Route("/health", endpoint=health_check, methods=["GET"]),
         ],
         lifespan=lifespan,
     )
+
+    app_instance.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    return app_instance
 
 
 if __name__ == "__main__":
