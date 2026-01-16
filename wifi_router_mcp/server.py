@@ -8,6 +8,7 @@ from datetime import datetime
 from typing import Any, Optional
 from mcp.server import Server
 from mcp.server.streamable_http_manager import StreamableHTTPSessionManager
+from mcp.server.fastmcp.server import StreamableHTTPASGIApp
 from mcp.types import (
     Resource,
     Tool,
@@ -22,7 +23,7 @@ import mcp.server.stdio
 from starlette.applications import Starlette
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
-from starlette.routing import Mount, Route
+from starlette.routing import Route
 
 
 # Simulated router state
@@ -978,9 +979,7 @@ async def main():
 def create_streamable_http_app() -> Starlette:
     """Create a Starlette app that serves MCP over Streamable HTTP."""
     session_manager = StreamableHTTPSessionManager(app)
-
-    async def streamable_http_asgi(scope, receive, send) -> None:
-        await session_manager.handle_request(scope, receive, send)
+    streamable_http_asgi = StreamableHTTPASGIApp(session_manager)
 
     async def health_check(_request):
         return JSONResponse({"status": "ok"})
@@ -992,8 +991,8 @@ def create_streamable_http_app() -> Starlette:
 
     app_instance = Starlette(
         routes=[
-            Mount("/sse", app=streamable_http_asgi),
-            Mount("/sse/", app=streamable_http_asgi),
+            Route("/sse", endpoint=streamable_http_asgi),
+            Route("/sse/", endpoint=streamable_http_asgi),
             Route("/health", endpoint=health_check, methods=["GET"]),
         ],
         lifespan=lifespan,
