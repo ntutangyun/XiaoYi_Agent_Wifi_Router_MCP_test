@@ -5,6 +5,8 @@ description = "MCP server simulating a WiFi router for home network management"
 requires-python = ">=3.10"
 dependencies = [
     "mcp>=1.0.0",
+    "starlette>=0.37.2",
+    "uvicorn>=0.24.0",
 ]
 
 [project.optional-dependencies]
