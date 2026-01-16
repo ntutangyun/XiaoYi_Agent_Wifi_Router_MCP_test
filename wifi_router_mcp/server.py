@@ -3,9 +3,11 @@
 import asyncio
 import json
 import random
+from contextlib import asynccontextmanager
 from datetime import datetime
 from typing import Any, Optional
 from mcp.server import Server
+from mcp.server.streamable_http_manager import StreamableHTTPSessionManager
 from mcp.types import (
     Resource,
     Tool,
@@ -17,6 +19,9 @@ from mcp.types import (
     GetPromptResult,
 )
 import mcp.server.stdio
+from starlette.applications import Starlette
+from starlette.responses import JSONResponse
+from starlette.routing import Mount, Route
 
 
 # Simulated router state
@@ -967,6 +972,30 @@ async def main():
             write_stream,
             app.create_initialization_options()
         )
+
+
+def create_streamable_http_app() -> Starlette:
+    """Create a Starlette app that serves MCP over Streamable HTTP."""
+    session_manager = StreamableHTTPSessionManager(app)
+
+    async def streamable_http_asgi(scope, receive, send) -> None:
+        await session_manager.handle_request(scope, receive, send)
+
+    async def health_check(_request):
+        return JSONResponse({"status": "ok"})
+
+    @asynccontextmanager
+    async def lifespan(_app: Starlette):
+        async with session_manager.run():
+            yield
+
+    return Starlette(
+        routes=[
+            Mount("/sse", app=streamable_http_asgi),
+            Route("/health", endpoint=health_check, methods=["GET"]),
+        ],
+        lifespan=lifespan,
+    )
 
 
 if __name__ == "__main__":
