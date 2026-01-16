@@ -28,7 +28,7 @@ This guide will help you quickly get the WiFi Router MCP Server up and running.
 
 ## Testing with MCP Inspector (5 minutes)
 
-The fastest way to explore the server's capabilities:
+The fastest way to explore the server's capabilities (stdio transport):
 
 ```bash
 npx @modelcontextprotocol/inspector python run_server.py
@@ -39,6 +39,17 @@ This opens a web interface where you can:
 - Execute tools interactively
 - View resources in real-time
 - Test prompts with different parameters
+
+### Using Streamable HTTP
+
+If you want to use the Streamable HTTP transport, start the server in one terminal:
+
+```bash
+python run_server.py --transport streamable-http --host 127.0.0.1 --port 3001
+```
+
+Then open MCP Inspector in another terminal (no server command) and connect it to
+`http://localhost:3001/sse`.
 
 ### Try These Examples:
 

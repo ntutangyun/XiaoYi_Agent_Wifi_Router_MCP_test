@@ -66,9 +66,17 @@ Or run the module directly:
 python -m wifi_router_mcp.server
 ```
 
+Start the MCP server using Streamable HTTP transport (for MCP Inspector or HTTP clients) in a separate terminal:
+
+```bash
+python run_server.py --transport streamable-http --host 127.0.0.1 --port 3001
+```
+
+Point your MCP client to `http://localhost:3001/sse`.
+
 ### Testing with MCP Inspector
 
-You can test the server using the MCP Inspector tool:
+You can test the server using the MCP Inspector tool (stdio transport):
 
 ```bash
 npx @modelcontextprotocol/inspector python run_server.py
@@ -79,6 +87,10 @@ This will open a web interface where you can:
 - Execute tool calls with different parameters
 - Read resources to see router state
 - Test prompts with various arguments
+
+To use Streamable HTTP, start the server with `--transport streamable-http` in one terminal
+and open MCP Inspector separately (no server command). Then connect the Inspector to
+`http://localhost:3001/sse`.
 
 ### Integrating with LLM Agents
 
