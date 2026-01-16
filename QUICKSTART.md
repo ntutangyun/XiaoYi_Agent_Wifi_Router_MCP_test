@@ -42,14 +42,13 @@ This opens a web interface where you can:
 
 ### Using Streamable HTTP
 
-If you want to use the Streamable HTTP transport, start the server in one terminal:
+If you want to use the Streamable HTTP transport, start the server like this:
 
 ```bash
 python run_server.py --transport streamable-http --host 127.0.0.1 --port 3001
 ```
 
-Then open MCP Inspector in another terminal (no server command) and connect it to
-`http://localhost:3001/sse`.
+Then connect MCP Inspector to `http://localhost:3001/sse`.
 
 ### Try These Examples:
 
