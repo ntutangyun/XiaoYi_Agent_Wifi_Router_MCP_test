@@ -2,6 +2,7 @@
 
 import asyncio
 import json
+import random
 from datetime import datetime
 from typing import Any, Optional
 from mcp.server import Server
@@ -167,13 +168,14 @@ async def read_resource(uri: str) -> str:
     elif uri == "router://config":
         return json.dumps({
             "ssid": router_state.ssid,
-            "password": "********" if router_state.password else None,
+            "password": "********",  # Always mask password for security
             "is_on": router_state.is_on,
             "frequency_band": router_state.frequency_band,
             "channel": router_state.channel,
             "security_mode": router_state.security_mode,
             "guest_network_enabled": router_state.guest_network_enabled,
             "guest_ssid": router_state.guest_ssid if router_state.guest_network_enabled else None,
+            "guest_password": "********" if router_state.guest_network_enabled else None,
             "firmware_version": router_state.firmware_version,
             "uptime_seconds": router_state.uptime_seconds,
             "uptime_readable": f"{router_state.uptime_seconds // 86400} days, {(router_state.uptime_seconds % 86400) // 3600} hours",
@@ -432,7 +434,8 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
                 "status": "success",
                 "message": "Guest network enabled",
                 "guest_ssid": router_state.guest_ssid,
-                "guest_password": router_state.guest_password,
+                "guest_password_set": True,
+                "note": "Password has been set but is not displayed for security. Check router configuration to view masked password.",
             }
         else:
             router_state.logs.insert(0, f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Guest network disabled")
@@ -512,7 +515,6 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
     
     elif name == "run_speed_test":
         # Simulate speed test with slight variations
-        import random
         result = {
             "status": "success",
             "download_mbps": round(router_state.network_stats["download_speed_mbps"] + random.uniform(-5, 5), 2),
