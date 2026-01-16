@@ -997,18 +997,8 @@ def create_streamable_http_app() -> Starlette:
             Route("/health", endpoint=health_check, methods=["GET"]),
         ],
         lifespan=lifespan,
-        redirect_slashes=False,
     )
     app_instance.router.redirect_slashes = False
-
-    app_instance.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-
-    return app_instance
 
     app_instance.add_middleware(
         CORSMiddleware,
