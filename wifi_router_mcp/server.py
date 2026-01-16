@@ -996,6 +996,7 @@ def create_streamable_http_app() -> Starlette:
             Route("/health", endpoint=health_check, methods=["GET"]),
         ],
         lifespan=lifespan,
+        redirect_slashes=False,
     )
 
     app_instance.add_middleware(
