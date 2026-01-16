@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "wifi-router": {
+      "command": "python",
+      "args": ["run_server.py"],
+      "description": "WiFi Router MCP Server - Simulates home WiFi router management",
+      "disabled": false
+    }
+  }
+}
