@@ -57,7 +57,7 @@ pip install -r requirements.txt
 Start the MCP server using stdio transport:
 
 ```bash
-python run_server.py
+python run_mcp_server.py
 ```
 
 Or run the module directly:
@@ -69,17 +69,33 @@ python -m wifi_router_mcp.server
 Start the MCP server using Streamable HTTP transport (for MCP Inspector or HTTP clients):
 
 ```bash
-python run_server.py --transport streamable-http --host 127.0.0.1 --port 3001
+python run_mcp_server.py --transport streamable-http --host 127.0.0.1 --port 3001
 ```
 
 Point your MCP client to `http://localhost:3001/sse`.
+
+Start the FastAPI server (REST endpoints):
+
+```bash
+python run_fastapi_server.py --host 127.0.0.1 --port 8000
+```
+
+FastAPI endpoints:
+
+- `GET /health`
+- `GET /tools`
+- `POST /tools/{tool_name}`
+- `GET /resources`
+- `GET /resources/{resource_id}` (use `devices`, `stats`, `config`, `logs`, `networks`, or a full `router://` URI)
+- `GET /prompts`
+- `POST /prompts/{prompt_name}`
 
 ### Testing with MCP Inspector
 
 You can test the server using the MCP Inspector tool (stdio transport):
 
 ```bash
-npx @modelcontextprotocol/inspector python run_server.py
+npx @modelcontextprotocol/inspector python run_mcp_server.py
 ```
 
 This will open a web interface where you can:
@@ -100,7 +116,7 @@ Add this server to your MCP client configuration (e.g., Claude Desktop, Cline):
   "mcpServers": {
     "wifi-router": {
       "command": "python",
-      "args": ["/path/to/XiaoYi_Agent_Wifi_Router_MCP_test/run_server.py"]
+      "args": ["/path/to/XiaoYi_Agent_Wifi_Router_MCP_test/run_mcp_server.py"]
     }
   }
 }
@@ -168,7 +184,8 @@ XiaoYi_Agent_Wifi_Router_MCP_test/
 ├── wifi_router_mcp/
 │   ├── __init__.py
 │   └── server.py          # Main MCP server implementation
-├── run_server.py          # Entry point script
+├── run_mcp_server.py      # MCP entry point script
+├── run_fastapi_server.py  # FastAPI entry point script
 ├── pyproject.toml         # Project metadata
 ├── requirements.txt       # Dependencies
 └── README.md             # This file
@@ -179,7 +196,7 @@ XiaoYi_Agent_Wifi_Router_MCP_test/
 The server can be tested interactively using MCP Inspector:
 
 ```bash
-npx @modelcontextprotocol/inspector python run_server.py
+npx @modelcontextprotocol/inspector python run_mcp_server.py
 ```
 
 Or integrate with any MCP-compatible client to test the full functionality.
@@ -188,6 +205,7 @@ Or integrate with any MCP-compatible client to test the full functionality.
 
 - Python 3.10 or higher
 - mcp >= 1.0.0
+- fastapi >= 0.110.0
 
 ## License
 
