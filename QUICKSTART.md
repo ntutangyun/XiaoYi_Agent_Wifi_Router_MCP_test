@@ -31,7 +31,7 @@ This guide will help you quickly get the WiFi Router MCP Server up and running.
 The fastest way to explore the server's capabilities (stdio transport):
 
 ```bash
-npx @modelcontextprotocol/inspector python run_server.py
+npx @modelcontextprotocol/inspector python run_mcp_server.py
 ```
 
 This opens a web interface where you can:
@@ -45,10 +45,20 @@ This opens a web interface where you can:
 If you want to use the Streamable HTTP transport, start the server like this:
 
 ```bash
-python run_server.py --transport streamable-http --host 127.0.0.1 --port 3001
+python run_mcp_server.py --transport streamable-http --host 127.0.0.1 --port 3001
 ```
 
 Then connect MCP Inspector to `http://localhost:3001/sse`.
+
+### Using FastAPI
+
+If you want the same Streamable HTTP endpoints via FastAPI, run:
+
+```bash
+python run_fastapi_server.py --host 127.0.0.1 --port 8000
+```
+
+Then connect MCP Inspector to `http://localhost:8000/sse`.
 
 ### Try These Examples:
 
@@ -80,7 +90,7 @@ Then connect MCP Inspector to `http://localhost:3001/sse`.
      "mcpServers": {
        "wifi-router": {
          "command": "python",
-         "args": ["/absolute/path/to/XiaoYi_Agent_Wifi_Router_MCP_test/run_server.py"]
+         "args": ["/absolute/path/to/XiaoYi_Agent_Wifi_Router_MCP_test/run_mcp_server.py"]
        }
      }
    }
@@ -102,7 +112,7 @@ Then connect MCP Inspector to `http://localhost:3001/sse`.
      "mcpServers": {
        "wifi-router": {
          "command": "python",
-         "args": ["/absolute/path/to/XiaoYi_Agent_Wifi_Router_MCP_test/run_server.py"]
+         "args": ["/absolute/path/to/XiaoYi_Agent_Wifi_Router_MCP_test/run_mcp_server.py"]
        }
      }
    }
@@ -160,7 +170,7 @@ pip install -r requirements.txt
 ### Issue: "Command 'python' not found"
 **Solution:** Use `python3` instead
 ```bash
-python3 run_server.py
+python3 run_mcp_server.py
 ```
 
 ### Issue: Server not showing in Claude/Cline

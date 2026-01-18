@@ -98,7 +98,7 @@ def test_server():
     print("\n" + "=" * 60)
     print("🎉 WiFi Router MCP Server is ready!")
     print("\nTo test with MCP Inspector:")
-    print("  npx @modelcontextprotocol/inspector python run_server.py")
+    print("  npx @modelcontextprotocol/inspector python run_mcp_server.py")
     print("\nTo integrate with MCP client:")
     print("  See mcp_config_example.json for configuration")
 

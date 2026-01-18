@@ -6,6 +6,7 @@ import random
 from contextlib import asynccontextmanager
 from datetime import datetime
 from typing import Any, Optional
+from fastapi import FastAPI
 from mcp.server import Server
 from mcp.server.streamable_http_manager import StreamableHTTPSessionManager
 from mcp.server.fastmcp.server import StreamableHTTPASGIApp
@@ -999,6 +1000,35 @@ def create_streamable_http_app() -> Starlette:
     )
     app_instance.router.redirect_slashes = False
 
+    app_instance.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    return app_instance
+
+
+def create_fastapi_app() -> FastAPI:
+    """Create a FastAPI app that serves MCP over Streamable HTTP."""
+    session_manager = StreamableHTTPSessionManager(app)
+    streamable_http_asgi = StreamableHTTPASGIApp(session_manager)
+
+    @asynccontextmanager
+    async def lifespan(_app: FastAPI):
+        async with session_manager.run():
+            yield
+
+    app_instance = FastAPI(lifespan=lifespan)
+
+    async def health_check():
+        return {"status": "ok"}
+
+    app_instance.add_route("/sse", streamable_http_asgi)
+    app_instance.add_route("/sse/", streamable_http_asgi)
+    app_instance.add_api_route("/health", health_check, methods=["GET"])
+    app_instance.router.redirect_slashes = False
     app_instance.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
