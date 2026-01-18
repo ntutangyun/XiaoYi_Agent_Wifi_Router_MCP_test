@@ -2,19 +2,18 @@
 
 from __future__ import annotations
 
-import json
 from typing import Any
 
 from fastapi import Body, FastAPI, HTTPException
 from starlette.middleware.cors import CORSMiddleware
 
-from wifi_router_mcp.server import (
-    call_tool,
-    get_prompt,
-    list_prompts,
-    list_resources,
-    list_tools,
-    read_resource,
+from wifi_router_shared.router import (
+    call_tool_data,
+    get_prompt_data,
+    list_prompts_data,
+    list_resources_data,
+    list_tools_data,
+    read_resource_data,
 )
 
 
@@ -35,14 +34,6 @@ def create_fastapi_app() -> FastAPI:
             return item.dict()
         return item
 
-    def parse_json_maybe(value: str) -> Any:
-        if not isinstance(value, str):
-            return value
-        try:
-            return json.loads(value)
-        except json.JSONDecodeError:
-            return value
-
     app_instance = FastAPI()
 
     @app_instance.get("/health")
@@ -51,22 +42,19 @@ def create_fastapi_app() -> FastAPI:
 
     @app_instance.get("/resources")
     async def list_resources_endpoint() -> list[dict[str, Any]]:
-        resources = await list_resources()
-        return [normalize_model(resource) for resource in resources]
+        return [normalize_model(resource) for resource in list_resources_data()]
 
     @app_instance.get("/resources/{resource_id}")
     async def read_resource_endpoint(resource_id: str) -> Any:
         uri = resource_uri_map.get(resource_id, resource_id)
         try:
-            payload = await read_resource(uri)
+            return read_resource_data(uri)
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
-        return parse_json_maybe(payload)
 
     @app_instance.get("/tools")
     async def list_tools_endpoint() -> list[dict[str, Any]]:
-        tools = await list_tools()
-        return [normalize_model(tool) for tool in tools]
+        return [normalize_model(tool) for tool in list_tools_data()]
 
     @app_instance.post("/tools/{tool_name}")
     async def call_tool_endpoint(
@@ -74,17 +62,13 @@ def create_fastapi_app() -> FastAPI:
         arguments: dict[str, Any] = Body(default_factory=dict),
     ) -> Any:
         try:
-            contents = await call_tool(tool_name, arguments)
+            return call_tool_data(tool_name, arguments)
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
-        if not contents:
-            return {}
-        return parse_json_maybe(contents[0].text)
 
     @app_instance.get("/prompts")
     async def list_prompts_endpoint() -> list[dict[str, Any]]:
-        prompts = await list_prompts()
-        return [normalize_model(prompt) for prompt in prompts]
+        return [normalize_model(prompt) for prompt in list_prompts_data()]
 
     @app_instance.post("/prompts/{prompt_name}")
     async def get_prompt_endpoint(
@@ -92,15 +76,9 @@ def create_fastapi_app() -> FastAPI:
         arguments: dict[str, str] | None = Body(default=None),
     ) -> dict[str, Any]:
         try:
-            prompt_result = await get_prompt(prompt_name, arguments)
+            return normalize_model(get_prompt_data(prompt_name, arguments))
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
-        prompt_payload = normalize_model(prompt_result)
-        if "messages" in prompt_payload:
-            for message in prompt_payload["messages"]:
-                if isinstance(message, dict) and "content" in message:
-                    message["content"] = normalize_model(message["content"])
-        return prompt_payload
 
     app_instance.router.redirect_slashes = False
     app_instance.add_middleware(

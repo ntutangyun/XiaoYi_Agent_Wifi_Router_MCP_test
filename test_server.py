@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0, '.')
 
 import json
-from wifi_router_mcp.server import router_state
+from wifi_router_shared.router import router_state
 
 
 def test_server():
