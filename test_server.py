@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0, '.')
 
 import json
-from wifi_router_mcp.server import router_state
+from wifi_router_shared.router import router_state
 
 
 def test_server():
@@ -98,7 +98,7 @@ def test_server():
     print("\n" + "=" * 60)
     print("🎉 WiFi Router MCP Server is ready!")
     print("\nTo test with MCP Inspector:")
-    print("  npx @modelcontextprotocol/inspector python run_server.py")
+    print("  npx @modelcontextprotocol/inspector python run_mcp_server.py")
     print("\nTo integrate with MCP client:")
     print("  See mcp_config_example.json for configuration")
 
