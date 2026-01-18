@@ -74,13 +74,21 @@ python run_mcp_server.py --transport streamable-http --host 127.0.0.1 --port 300
 
 Point your MCP client to `http://localhost:3001/sse`.
 
-Start the FastAPI server (Streamable HTTP endpoints are identical):
+Start the FastAPI server (REST endpoints):
 
 ```bash
 python run_fastapi_server.py --host 127.0.0.1 --port 8000
 ```
 
-Point your MCP client to `http://localhost:8000/sse`.
+FastAPI endpoints:
+
+- `GET /health`
+- `GET /tools`
+- `POST /tools/{tool_name}`
+- `GET /resources`
+- `GET /resources/{resource_id}` (use `devices`, `stats`, `config`, `logs`, `networks`, or a full `router://` URI)
+- `GET /prompts`
+- `POST /prompts/{prompt_name}`
 
 ### Testing with MCP Inspector
 

@@ -52,13 +52,17 @@ Then connect MCP Inspector to `http://localhost:3001/sse`.
 
 ### Using FastAPI
 
-If you want the same Streamable HTTP endpoints via FastAPI, run:
+If you want REST endpoints via FastAPI, run:
 
 ```bash
 python run_fastapi_server.py --host 127.0.0.1 --port 8000
 ```
 
-Then connect MCP Inspector to `http://localhost:8000/sse`.
+Then call REST endpoints like:
+- `GET http://localhost:8000/health`
+- `GET http://localhost:8000/tools`
+- `POST http://localhost:8000/tools/get_router_status`
+- `GET http://localhost:8000/resources/devices`
 
 ### Try These Examples:
 
