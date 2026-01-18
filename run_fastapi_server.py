@@ -6,7 +6,7 @@ import os
 
 import uvicorn
 
-from wifi_router_mcp.server import create_fastapi_app
+from wifi_router_rest.server import create_fastapi_app
 
 
 def parse_args() -> argparse.Namespace:
